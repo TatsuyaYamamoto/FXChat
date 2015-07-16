@@ -1,43 +1,47 @@
 import java.net.Socket;
 import java.net.ServerSocket;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.IOException;
 
 public class ServerMain {
 
-public static final int ECHO_PORT = 10007;
+public static final int ECHO_PORT = 12121;
 
   public static void main(String args[]) {
     ServerSocket serverSocket = null;
-    Socket socket = null;
     try{
+
+      //サーバーを起動
+      System.out.println("\r//////////START FXChat SYSTEM!! d(・８・)b//////////\r");
+      System.out.println("socket creating...");
       serverSocket = new ServerSocket(ECHO_PORT);
-      System.out.println("EchoServerが起動しました(port=" + serverSocket.getLocalPort() + ")");
-      socket = serverSocket.accept();
-      System.out.println("接続されました " + socket.getRemoteSocketAddress() );
+      System.out.println("EchoServerが起動しました");
+      System.out.println("LocalPort : " + serverSocket.getLocalPort());
+      //クライアントからのコネクション待機
+      System.out.println("待つわ、、、いつまでも待つわ");
 
 
-      BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-
-      String line;
-      while ( (line = input.readLine()) != null ) {
-        System.out.println("get message : " + line);
-        output.println("サーバーより : " + line);
-        System.out.println("echo message : " + line);
+      //クライアントからのTCPコネクションを待ち続ける
+      while(true){
+        Socket socket = serverSocket.accept();
+        new ChatThread(socket).start();
+        //コネンション確立後、ログインセクションに移行
+        System.out.println("接続されました！");
+        System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
       }
+
+
+      // BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      // PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+
+      // String line;
+      // while ( (line = input.readLine()) != null ) {
+      //   System.out.println("get message : " + line);
+      //   output.println("サーバーより : " + line);
+      //   System.out.println("echo message : " + line);
+      // }
     }catch(IOException e) {
       e.printStackTrace();
     }finally{
-      try{
-        if(socket != null) {
-          socket.close();
-        }
-      }catch(IOException e) {
-
-      }
       try{
         if(serverSocket != null) {
           serverSocket.close();
@@ -45,6 +49,7 @@ public static final int ECHO_PORT = 10007;
       }catch (IOException e) {
 
       }
+      System.out.println("\r//////////CLOSED FXChat SYSTEM.... q(・８・)p//////////\r");
     }
   }
 }
