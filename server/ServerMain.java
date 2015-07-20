@@ -4,14 +4,17 @@ import java.io.IOException;
 
 public class ServerMain {
 
-public static final int ECHO_PORT = 12121;
+  public static final int ECHO_PORT = 12121;
+
+  //環境に合わせた改行コードを取得する
+  public static final String sep = System.getProperty("line.separator");
 
   public static void main(String args[]) {
     ServerSocket serverSocket = null;
     try{
 
       //サーバーを起動
-      System.out.println("\r//////////START FXChat SYSTEM!! d(・８・)b//////////\r");
+      System.out.println(sep + "//////////START FXChat SYSTEM!! d(・８・)b//////////" + sep);
       System.out.println("socket creating...");
       serverSocket = new ServerSocket(ECHO_PORT);
       System.out.println("EchoServerが起動しました");
@@ -23,10 +26,11 @@ public static final int ECHO_PORT = 12121;
       //クライアントからのTCPコネクションを待ち続ける
       while(true){
         Socket socket = serverSocket.accept();
-        new ChatThread(socket).start();
         //コネンション確立後、ログインセクションに移行
-        System.out.println("接続されました！");
+        System.out.println("接続されました！新しいスレッド内へソケット渡します。");
         System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
+
+        new ChatThread(socket).start();
       }
 
 
