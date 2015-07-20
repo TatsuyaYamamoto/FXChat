@@ -2,6 +2,9 @@ import java.net.Socket;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
 import java.io.PrintWriter;
 import java.io.IOException;
 
@@ -22,22 +25,34 @@ public static final String  crlf = System.getProperty("line.separator");
     }
 
     public void run(){
+
 		try{
-		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		    // BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		    BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 		    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 
-		    while(!socket.isClosed()){
+			int c = 0;
+			System.out.println("bout");
 
-				String line = in.readLine();
+			while(!socket.isClosed()){
+				// String line = in.readLine();
 
-				if(line == null){
-					break;
-				}
+				bout.write(input.read());
 
-				System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
-				System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
-				out.println(line);
+		    	System.out.println(new String(bout.toByteArray(), "UTF-8") + "!!");
+
+
+				// if(line == null){
+				// break;
+				// }
+
+				// System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
+				// System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
+				// out.println(line);
+
 		    }
+
 		}catch(IOException e){
 		    e.printStackTrace();
 		}finally{

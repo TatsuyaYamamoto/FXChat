@@ -91,7 +91,7 @@ public static final String  crlf = System.getProperty("line.separator");
     new ReceptionThread(socket).start();
 
     while(!socket.isClosed()){
-      //これむだやな、、、直したんんですけど。
+      //これむだやな、、、直したいんですけど。
     }
 
 
