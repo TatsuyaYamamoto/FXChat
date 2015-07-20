@@ -5,40 +5,30 @@ import java.io.IOException;
 public class ServerMain {
 
 public static final int ECHO_PORT = 12121;
+//開業コード取得
+public static final String  crlf = System.getProperty("line.separator");
 
   public static void main(String args[]) {
     ServerSocket serverSocket = null;
     try{
 
       //サーバーを起動
-      System.out.println("\r//////////START FXChat SYSTEM!! d(・８・)b//////////\r");
+      System.out.println(crlf + "//////////////////////////////////////////////////");
+      System.out.println("////////  START FXChat SYSTEM! d(・８・)b  ////////");
+      System.out.println("//////////////////////////////////////////////////" + crlf);
+
       System.out.println("socket creating...");
       serverSocket = new ServerSocket(ECHO_PORT);
-      System.out.println("EchoServerが起動しました");
-      System.out.println("LocalPort : " + serverSocket.getLocalPort());
-      //クライアントからのコネクション待機
-      System.out.println("待つわ、、、いつまでも待つわ");
-
+      System.out.println("ServerSocketが起動しました!(LocalPort : " + serverSocket.getLocalPort() + ")");
+      System.out.println("ソケット接続が可能になりました" + crlf);
 
       //クライアントからのTCPコネクションを待ち続ける
-      while(true){
+      while(!serverSocket.isClosed()){
+        //クライアントからのコネクション待機
         Socket socket = serverSocket.accept();
         new ChatThread(socket).start();
-        //コネンション確立後、ログインセクションに移行
-        System.out.println("接続されました！");
-        System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
       }
 
-
-      // BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      // PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-
-      // String line;
-      // while ( (line = input.readLine()) != null ) {
-      //   System.out.println("get message : " + line);
-      //   output.println("サーバーより : " + line);
-      //   System.out.println("echo message : " + line);
-      // }
     }catch(IOException e) {
       e.printStackTrace();
     }finally{
@@ -49,7 +39,10 @@ public static final int ECHO_PORT = 12121;
       }catch (IOException e) {
 
       }
-      System.out.println("\r//////////CLOSED FXChat SYSTEM.... q(・８・)p//////////\r");
+      System.out.println(crlf + "//////////////////////////////////////////////////");
+      System.out.println("////////// CLOSED FXChat SYSTEM.... q(・８・)p //////////");
+      System.out.println("//////////////////////////////////////////////////" + crlf);
+
     }
   }
 }

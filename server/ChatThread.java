@@ -8,32 +8,36 @@ import java.io.IOException;
 class ChatThread extends Thread{
     private Socket socket;
 
+//開業コード取得
+public static final String  crlf = System.getProperty("line.separator");
+
     public ChatThread(Socket socket){
-		System.out.println("//////////GET NEW CHAT THREAD! d(・８・)b//////////");
+		System.out.println(crlf + "//////////////////////////////////////////////////");
+		System.out.println("////////  RUN NEW CHAT THREAD! d(・８・)b  ////////");
+		System.out.println("//////////////////////////////////////////////////" + crlf);
+
 		this.socket = socket;
 
-		System.out.println("接続された");
-		System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
+		System.out.println("Client Socketと接続しました。(Remote Socket Address : " + socket.getRemoteSocketAddress() + ")");
     }
 
     public void run(){
 		try{
-			System.out.println("s1");
 		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			System.out.println("s2");
 
-			String start = "//////////WELCOME TO 秘密のCHATの園(ﾃﾞﾃﾞｰﾝ//////////";
-			out.print(start);
+		    while(!socket.isClosed()){
 
-		    String line;
+				String line = in.readLine();
 
-		    out.print(in.readLine());
-		  //   while( (line = in.readLine()) != null ){
-				// System.out.println("[GET MESSAGE] "+socket.getRemoteSocketAddress() + " 受信 : " + line);
-				// System.out.println(socket.getRemoteSocketAddress() + " 送信 : " + line);
-				// out.println(line);
-		  //   }
+				if(line == null){
+					break;
+				}
+
+				System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
+				System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
+				out.println(line);
+		    }
 		}catch(IOException e){
 		    e.printStackTrace();
 		}finally{
