@@ -1,40 +1,86 @@
 import java.net.Socket;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 
 class ChatThread extends Thread{
     private Socket socket;
 
     //環境に合わせた改行コードを取得する
-	public static final String sep = System.getProperty("line.separator");
+	public static final String crlf = System.getProperty("line.separator");
+	//固定値：messageのbyte列の要素数
+	private static byte BUFFERED_MESSAGE_SIZE = 1028;
+
 
     public ChatThread(Socket socket){
-		System.out.println(sep + "//////////GET NEW CHAT THREAD! d(・８・)b//////////" + sep);
+		System.out.println(crlf + "//////////////////////////////////////////////////");
+		System.out.println("////////  RUN NEW CHAT THREAD! d(・８・)b  ////////");
+		System.out.println("//////////////////////////////////////////////////" + crlf);
+
 		this.socket = socket;
 
-		System.out.println("接続されました！");
-		System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
+		System.out.println("Client Socketと接続しました。(Remote Socket Address : " + socket.getRemoteSocketAddress() + ")");
     }
 
     public void run(){
+
 		try{
+		    InputStream input = socket.getInputStream();
+		    OutputStream output = socket.getOutputStream();
 
-		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
+			int messageSize; // 受信メッセージサイズ
 
-		    String line;
 
-		    out.print(in.readLine());
-		    while( (line = in.readLine()) != null ){
-				System.out.println("[GET MESSAGE] "+socket.getRemoteSocketAddress() + " 受信 : " + line);
-				System.out.println(socket.getRemoteSocketAddress() + " 送信 : " + line);
-				out.println(line);
-		    }
+			while(!socket.isClosed()){
+
+				if((messageSize = input.read(buffer)) == -1){
+					break;
+				}
+
+				System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
+				System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
+
+				//バイト列を出力
+				output.write(buffer);
+				output.flush();//残らずでやがれ！
+				// output.close();
+			}
+
+
+
+			// int c = 0;
+			// System.out.println("bout");
+
+			// while(!socket.isClosed()){
+			// 	// String line = in.readLine();
+
+			// 	bout.write(input.read());
+
+
+		 //    	System.out.println(new String(bout.toByteArray(), "UTF-8") + "!!");
+
+
+		 //  //   out.print(in.readLine());
+		 //  //   while( (line = in.readLine()) != null ){
+			// 	// System.out.println("[GET MESSAGE] "+socket.getRemoteSocketAddress() + " 受信 : " + line);
+			// 	// System.out.println(socket.getRemoteSocketAddress() + " 送信 : " + line);
+			// 	// out.println(line);
+		 //  //   }
+
+			// 	// if(line == null){
+			// 	// break;
+			// 	// }
+
+			// 	// System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
+			// 	// System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
+			// 	// out.println(line);
+
+		 //    }
+
 		}catch(IOException e){
 		    e.printStackTrace();
+			System.out.println("これ？");
 		}finally{
 		    try{
 				if(socket != null){
