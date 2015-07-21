@@ -2,16 +2,19 @@ import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.io.Console;
 
 public class ClientMain {
 
-  public static int SERVER_PORT = 12121;
+  public static final int SERVER_PORT = 12121;
 
-//開業コード取得
-public static final String  crlf = System.getProperty("line.separator");
+  //開業コード取得
+  public static final String  crlf = System.getProperty("line.separator");
 
+  public static Socket socket = null;
 
   public static void main(String args[]) {
 
@@ -19,8 +22,6 @@ public static final String  crlf = System.getProperty("line.separator");
     System.out.println("////////  This is Client-Side! d(・８・)b  ////////");
     System.out.println("///////////////////////////////////////////////////" + crlf);
 
-
-    Socket socket = null;
     Console console = System.console();
 
     /*コネクションセクション----------------*/
@@ -62,7 +63,8 @@ public static final String  crlf = System.getProperty("line.separator");
       //サーバへpasswordを送信
       char [] password = console.readPassword("password > ");
 
-      if(verifyLogin(user_name, password)){
+      if("true".equals(verifyLogin(user_name, password))){
+      // if(isLoginPermitted == "true"){
         //ログインセクションから出ます。
         break;
       }else{
@@ -108,9 +110,25 @@ public static final String  crlf = System.getProperty("line.separator");
   }//main()終了
 
   //ログイン処理
-  public static boolean verifyLogin(String user_name, char [] password){
+  public static String verifyLogin(String user_name, char [] password){
 
-    return true;
+    InputStream input = null;
+    String isLoginPermitted = "false";
+    try{
+      OutputStream output = socket.getOutputStream();
+      output.write(FXprotocolModuleClient.login(user_name, password));
+
+      input = socket.getInputStream();
+
+      byte [] buffer = new byte[10];//受信バイト列格納用、とりあえず10
+      int messageSize = input.read(buffer);// 受信メッセージサイズ
+      isLoginPermitted = FXprotocolModuleClient.convert(buffer, messageSize);
+
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+    System.out.println(isLoginPermitted);
+    return isLoginPermitted;
   }
 
 }

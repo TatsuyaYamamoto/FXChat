@@ -33,57 +33,45 @@ class ChatThread extends Thread{
 				byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
 				int messageSize = input.read(buffer); // 受信メッセージサイズ
 
-				System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
-				System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
+				//受信したmessageのheaderを確認する
+				String messageType = FXprotocolModuleServer.checkHeader(buffer);
 
-				//バイト列を出力
-				output.write(buffer);
-				output.flush();//残らずでやがれ！
+				switch(messageType){
+					case "login":
+						System.out.println("[LOGIN REQUEST RECEPTION : "+socket.getRemoteSocketAddress() + " ]" );
+
+						if(FXprotocolModuleServer.isLoginPermitted()){
+							buffer = "true".getBytes();
+							System.out.println("[LOGIN おk！ : "+socket.getRemoteSocketAddress() + " ]" );
+						}else{
+							buffer = "false".getBytes();
+							System.out.println("[LOGIN だめ！ : "+socket.getRemoteSocketAddress() + " ]" );
+						}
+						break;
+
+					case "broadcast":
+
+						System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
+						System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
+						break;
+				}
+							//バイト列を出力
+						output.write(buffer);
+						output.flush();//残らずでやがれ！
 			}
 
-
-
-			// int c = 0;
-			// System.out.println("bout");
-
-			// while(!socket.isClosed()){
-			// 	// String line = in.readLine();
-
-			// 	bout.write(input.read());
-
-
-		 //    	System.out.println(new String(bout.toByteArray(), "UTF-8") + "!!");
-
-
-		 //  //   out.print(in.readLine());
-		 //  //   while( (line = in.readLine()) != null ){
-			// 	// System.out.println("[GET MESSAGE] "+socket.getRemoteSocketAddress() + " 受信 : " + line);
-			// 	// System.out.println(socket.getRemoteSocketAddress() + " 送信 : " + line);
-			// 	// out.println(line);
-		 //  //   }
-
-			// 	// if(line == null){
-			// 	// break;
-			// 	// }
-
-			// 	// System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
-			// 	// System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + line);
-			// 	// out.println(line);
-
-		 //    }
-
 		}catch(IOException e){
-		    e.printStackTrace();
-			System.out.println("これ？");
+		    // e.printStackTrace();
 		}finally{
 		    try{
 				if(socket != null){
 				    socket.close();
 				}
 		    }catch(IOException e){
-				System.out.println("切断された");
-				System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
+
 		    }
+			System.out.println("切断されました");
+			System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
 		}
     }
 }

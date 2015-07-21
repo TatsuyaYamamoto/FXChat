@@ -17,72 +17,70 @@ class FXprotocolModuleClient{
 
 
 	public static String convert (byte [] buffer, int messageSize){
+		//headerを削除
+		byte[] body_bytes = new byte[buffer.length - 2];
+		for(int i = 0; i < body_bytes.length; i++){
+			body_bytes[i] = buffer[i+2];
+		}
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		bout.write(buffer, 0, messageSize);
-
+		bout.write(body_bytes, 0, body_bytes.length);
 		// 受信したバイト列をunicodeに変換
-		String text_String;
+		String body_String;
 		try{
-			text_String = new String(bout.toByteArray(), "UTF-8");
+			body_String = new String(bout.toByteArray(), "UTF-8");
 		}catch(UnsupportedEncodingException e){
 			// e.printStackTrace();
-			text_String = "CONVERT ERROR";
+			body_String = "CONVERT ERROR";
 		}
-		return text_String;
+		return body_String;
 	}
 
 	public static byte[] convert(String body_String){
+
+
+		//typeはブロードキャスト固定
+		byte type_byte = 3;
+
 		byte[] body_bytes = body_String.getBytes();
-		return body_bytes;
+
+		//サーバーへ送るバイト列を作成。version, type, bodyを結合する
+		//ログイン時のbyte列の要素数はheader 2bytes
+		byte[] message = new byte[1 + 1 + body_bytes.length];
+		message[0] = VERSION;
+		message[1] = type_byte;
+		for(int i = 0; i < body_bytes.length; i++){
+			message[i+2] = body_bytes[i];
+		}
+
+
+		return message;
 	}
 
-	// public static byte[] convert(String type_String, String body_String){
+	public static byte[] login(String user_name, char [] password){
 
-	// 	//typeをbyte列に変換
-	// 	byte type_byte = 0;
-	// 	switch(type_String){
-	// 		case "login":
-	// 			type_byte = 1;
-	// 			break;
-	// 		case "logout":
-	// 			type_byte = 2;
-	// 			break;
-	// 		case "broadcast":
-	// 			type_byte = 3;
-	// 			break;
-	// 	}
-	// 	//入力された文字列をバイト列に変換
-	// 	byte[] body_bytes = body_String.getBytes();
+		//typeはログイン固定
+		byte type_byte = 1;
 
-	// 	//サーバーへ送るバイト列を作成
-	// 	byte[] message = new byte[body_bytes.length + 2];
-	// 	message[0] = VERSION;
-	// 	message[1] = type_byte;
-	// 	for(int i = 0; i < body_bytes.length; i++){
-	// 		message[i + 2] = body_bytes[i];
-	// 	}
+		//user_nameをバイト列に変換
+		byte[] user_name_bytes = user_name.getBytes();
 
-	// 	return message;
-	// }
+		//passwordをバイト列に変換
+		byte[] password_bytes = String.valueOf(password).getBytes();
 
-	// public byte[] login(String user_name, char [] password){
+		//サーバーへ送るバイト列を作成。version, type, bodyを結合する
+		//ログイン時のbyte列の要素数はheader 2bytes, username 32bytes, password 32bytes
+		byte[] message = new byte[1 + 1 + 32 + 32];
+		message[0] = VERSION;
+		message[1] = type_byte;
+		for(int i = 0; i < user_name_bytes.length; i++){
+			message[i+1] = user_name_bytes[i];
+		}
+		for(int i = 0; i < user_name_bytes.length; i++){
+			message[i+33] = password_bytes[i];
+		}
 
-	// 	//typeはログイン固定
-	// 	byte type_byte = 1;
-
-	// 	//user_nameをバイト列に変換
-	// 	byte[] user_name_bytes = user_name.getBytes();
-
-	// 	//passwordをバイト列に変換
-	// 	byte[] password_bytes;
-	// 	for(int i = 0; i < password.length; i++){
-
-	// 	}
-	// 	//サーバーへ送るバイト列を作成。version, type, bodyを結合する
-	// 	byte[] message;
-
-	// 	return message;
-	// }
+		return message;
+	}
 
 	public byte[] logout(){
 
