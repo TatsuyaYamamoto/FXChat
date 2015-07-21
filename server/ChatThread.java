@@ -9,7 +9,7 @@ class ChatThread extends Thread{
     //環境に合わせた改行コードを取得する
 	public static final String crlf = System.getProperty("line.separator");
 	//固定値：messageのbyte列の要素数
-	private static byte BUFFERED_MESSAGE_SIZE = 1028;
+	private static int BUFFERED_MESSAGE_SIZE = 1028;
 
 
     public ChatThread(Socket socket){
@@ -28,15 +28,10 @@ class ChatThread extends Thread{
 		    InputStream input = socket.getInputStream();
 		    OutputStream output = socket.getOutputStream();
 
-			byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
-			int messageSize; // 受信メッセージサイズ
-
 
 			while(!socket.isClosed()){
-
-				if((messageSize = input.read(buffer)) == -1){
-					break;
-				}
+				byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
+				int messageSize = input.read(buffer); // 受信メッセージサイズ
 
 				System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
 				System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
@@ -44,7 +39,6 @@ class ChatThread extends Thread{
 				//バイト列を出力
 				output.write(buffer);
 				output.flush();//残らずでやがれ！
-				// output.close();
 			}
 
 

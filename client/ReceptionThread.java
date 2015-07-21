@@ -2,13 +2,13 @@ import java.io.InputStream;
 import java.io.IOException;
 
 import java.net.Socket;
-
+import java.lang.IndexOutOfBoundsException;
 
 class ReceptionThread extends Thread{
 
 	private Socket socket;
 	//固定値：messageのbyte列の要素数
-	private static byte BUFFERED_MESSAGE_SIZE = 1028;
+	private static int BUFFERED_MESSAGE_SIZE = 1028;
 
 	public ReceptionThread(Socket socket){
 		this.socket = socket;
@@ -21,21 +21,17 @@ class ReceptionThread extends Thread{
 
 		    InputStream input = socket.getInputStream();
 
-			byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
-			int messageSize; // 受信メッセージサイズ
-
-
 			while(!socket.isClosed()){
-
-				if((messageSize = input.read(buffer)) == -1){
-					break;
-				}
+				byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
+				int messageSize = input.read(buffer);// 受信メッセージサイズ
 
 				System.out.println("サーバーさん : " + FXprotocolModuleClient.convert(buffer, messageSize));
 			}
 
 
 		}catch(IOException e){
+			// e.printStackTrace();
+		}catch(IndexOutOfBoundsException e){
 			// e.printStackTrace();
 		}finally{
 			try{

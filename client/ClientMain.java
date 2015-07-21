@@ -1,11 +1,7 @@
 import java.net.Socket;
-import java.net.ServerSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.Console;
 
@@ -18,10 +14,6 @@ public static final String  crlf = System.getProperty("line.separator");
 
 
   public static void main(String args[]) {
-
-
-    //要実装！！！！！！
-    //標準入力のチェック
 
     System.out.println(crlf + "///////////////////////////////////////////////////");
     System.out.println("////////  This is Client-Side! d(・８・)b  ////////");
@@ -117,7 +109,7 @@ public static final String  crlf = System.getProperty("line.separator");
 
   //ログイン処理
   public static boolean verifyLogin(String user_name, char [] password){
-    
+
     return true;
   }
 
