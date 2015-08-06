@@ -6,6 +6,10 @@ import java.net.Socket;
 
 class TransmissionThread extends Thread{
 
+
+	//開業コード取得
+	public static final String  crlf = System.getProperty("line.separator");
+
 	private Socket socket;
 
 	public TransmissionThread(Socket socket){
@@ -57,6 +61,12 @@ class TransmissionThread extends Thread{
 				}
 			}catch(IOException e){
 				// e.printStackTrace();
+			}finally{
+			    System.out.println(crlf + "//////////////////////////////////////////////////");
+			    System.out.println("// 切断されました");
+			    System.out.println("// local socket address  = " + socket.getLocalSocketAddress() );
+			    System.out.println("// remote socket address = " + socket.getRemoteSocketAddress() );
+			    System.out.println("//////////////////////////////////////////////////" + crlf);
 			}
 		}
 	}

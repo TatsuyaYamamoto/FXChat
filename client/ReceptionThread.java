@@ -9,6 +9,8 @@ class ReceptionThread extends Thread{
 	private Socket socket;
 	//固定値：messageのbyte列の要素数
 	private static int BUFFERED_MESSAGE_SIZE = 1028;
+	//開業コード取得
+	public static final String  crlf = System.getProperty("line.separator");
 
 	public ReceptionThread(Socket socket){
 		this.socket = socket;
@@ -42,6 +44,12 @@ class ReceptionThread extends Thread{
 
 			}catch(IOException e){
 				// e.printStackTrace();
+			}finally{
+			    System.out.println(crlf + "//////////////////////////////////////////////////");
+			    System.out.println("// 切断されました");
+			    System.out.println("// local socket address  = " + socket.getLocalSocketAddress() );
+			    System.out.println("// remote socket address = " + socket.getRemoteSocketAddress() );
+			    System.out.println("//////////////////////////////////////////////////" + crlf);
 			}
 		}
 

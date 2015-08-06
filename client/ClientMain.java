@@ -1,3 +1,9 @@
+/**
+コネクション、ログインセクションを介してチャットセクションに移行します。
+チャットセクションはReceptionThreadとTransmissionThreadで構成され、
+移行後はmain()は終了します。
+*/
+
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -32,13 +38,19 @@ public class ClientMain {
       System.out.println("Please enter host name of connection destination");
       String host = console.readLine("host > ");
 
-      try{
-        socket = new Socket(host, SERVER_PORT);
+      //hostに入力があればソケットを作成
+      if("".equals(host)){
+          System.out.println("見入力です。");
+      }else{
+        try{
+          socket = new Socket(host, SERVER_PORT);
+        }
+        catch(UnknownHostException e){
+          System.out.println("つなげるサーバーがないぞ！（・８・）9m");
+        }
+        catch(IOException e){}
       }
-      catch(UnknownHostException e){
-        System.out.println("つなげるサーバーがないぞ！（・８・）9m");
-      }
-      catch(IOException e){}
+
 
       //接続成功:break
       //接続失敗:socket == null
@@ -58,13 +70,10 @@ public class ClientMain {
 
     while(true) {
 
-      //サーバへuser_nameを送信
       String user_name = console.readLine("user_name > ");
-      //サーバへpasswordを送信
       char [] password = console.readPassword("password > ");
 
-      if("true".equals(verifyLogin(user_name, password))){
-      // if(isLoginPermitted == "true"){
+      if(verifyLogin(user_name, password)){
         //ログインセクションから出ます。
         break;
       }else{
@@ -73,62 +82,37 @@ public class ClientMain {
       }
     }
 
+    /**チャットセクション----------------*/
 
     System.out.println(crlf + "///////////////////////////////////////////////////////");
     System.out.println("////////  WELCOME! THIS IS FXChat! d(・８・)b  ////////");
     System.out.println("///////////////////////////////////////////////////////" + crlf);
 
-
-    /**チャットセクション----------------*/
-
     new TransmissionThread(socket).start();
     new ReceptionThread(socket).start();
-
-    while(!socket.isClosed()){
-      //これむだやな、、、直したいんですけど。
-    }
-
-
-
-    //ソケットを閉じる
-    try{
-
-      if(!socket.isClosed()){
-        socket.close();
-        System.out.println("close socket...(ｼｮﾝﾎﾞﾘ");
-      }
-    }catch(IOException e){
-      e.printStackTrace();
-    }
-
-    System.out.println(crlf + "//////////////////////////////////////////////////");
-    System.out.println("// 切断されました");
-    System.out.println("// local socket address  = " + socket.getLocalSocketAddress() );
-    System.out.println("// remote socket address = " + socket.getRemoteSocketAddress() );
-    System.out.println("//////////////////////////////////////////////////" + crlf);
 
   }//main()終了
 
   //ログイン処理
-  public static String verifyLogin(String user_name, char [] password){
+  public static Boolean verifyLogin(String user_name, char [] password){
 
-    InputStream input = null;
-    String isLoginPermitted = "false";
-    try{
-      OutputStream output = socket.getOutputStream();
-      output.write(FXprotocolModuleClient.login(user_name, password));
+    // InputStream input = null;
+    // String isLoginPermitted = "false";
+    // try{
+    //   OutputStream output = socket.getOutputStream();
+    //   output.write(FXprotocolModuleClient.login(user_name, password));
 
-      input = socket.getInputStream();
+    //   input = socket.getInputStream();
 
-      byte [] buffer = new byte[10];//受信バイト列格納用、とりあえず10
-      int messageSize = input.read(buffer);// 受信メッセージサイズ
-      isLoginPermitted = FXprotocolModuleClient.convert(buffer, messageSize);
+    //   byte [] buffer = new byte[10];//受信バイト列格納用、とりあえず10
+    //   int messageSize = input.read(buffer);// 受信メッセージサイズ
+    //   isLoginPermitted = FXprotocolModuleClient.convert(buffer, messageSize);
 
-    }catch(IOException e){
-      e.printStackTrace();
-    }
-    System.out.println(isLoginPermitted);
-    return isLoginPermitted;
+    // }catch(IOException e){
+    //   e.printStackTrace();
+    // }
+    // System.out.println(isLoginPermitted);
+    return true;
   }
 
 }
