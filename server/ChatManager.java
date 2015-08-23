@@ -5,6 +5,9 @@ public class ChatManager{
 
 	//名前は何がいいかわからない
 	HashMap<String, Socket> chatMap;
+    //環境に合わせた改行コードを取得する
+	public static final String crlf = System.getProperty("line.separator");
+
 
 	public ChatManager(){
 		System.out.println(crlf + "//////////////////////////////////////////////////");
@@ -37,6 +40,7 @@ public class ChatManager{
 			sockets[i] = e.getValue();
 			i++;
 		}
+		return sockets;
 	}
 	//特定ユーザーのソケット取得(複数対応にする？)
 	public Socket getSocket(String userId){

@@ -1,0 +1,5 @@
+{
+	"createConnection" : "////ソケット接続かんりょう！////",
+	"notFoundSocket" : "ふえ〜サーバーソケットが見つからないよう！",
+	"socketClosed" : "ソケットがクローズしちゃった！"
+}

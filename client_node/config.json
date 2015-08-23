@@ -1,0 +1,21 @@
+{
+	"app": {
+		"base": 2,
+		"version": 1
+	},
+	"type": {
+		"base": 2,
+		"login": 0,
+		"login_response": 1,
+		"logout": 10,
+		"messaging": 11,
+		"broadcast": 100,
+		"broadcast_response": 101,
+		"multicast": 111,
+		"loginUsers": 1000
+	},
+	"connection": {
+	    "host": "127.0.0.1",
+	    "port": 12121
+	}
+}

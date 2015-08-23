@@ -30,34 +30,40 @@ class ChatThread extends Thread{
 
 
 			while(!socket.isClosed()){
-				byte [] buffer = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
-				int messageSize = input.read(buffer); // 受信メッセージサイズ
+
+				byte [] message = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
+				input.read(message); // メッセージ受信
+				System.out.println(message[0] + "+" + message[1] + "+" + message[2]+ "+" + message[100]);
+
 
 				//受信したmessageのheaderを確認する
-				String messageType = FXprotocolModuleServer.checkHeader(buffer);
+				// String messageType = FXprotocolModuleServer.checkHeader(message);
 
-				switch(messageType){
-					case "login":
-						System.out.println("[LOGIN REQUEST RECEPTION : "+socket.getRemoteSocketAddress() + " ]" );
+				System.out.println("[GET MESSAGE] : " + FXprotocolModuleServer.getBody(message));
 
-						if(FXprotocolModuleServer.isLoginPermitted()){
-							buffer = "true".getBytes();
-							System.out.println("[LOGIN おk！ : "+socket.getRemoteSocketAddress() + " ]" );
-						}else{
-							buffer = "false".getBytes();
-							System.out.println("[LOGIN だめ！ : "+socket.getRemoteSocketAddress() + " ]" );
-						}
-						break;
+				// switch(messageType){
+				// 	case "login":
+				// 		System.out.println("[LOGIN REQUEST RECEPTION : "+socket.getRemoteSocketAddress() + " ]" );
 
-					case "broadcast":
+				// 		if(FXprotocolModuleServer.isLoginPermitted()){
+				// 			message = "true".getBytes();
+				// 			System.out.println("[LOGIN おk！ : "+socket.getRemoteSocketAddress() + " ]" );
+				// 		}else{
+				// 			message = "false".getBytes();
+				// 			System.out.println("[LOGIN だめ！ : "+socket.getRemoteSocketAddress() + " ]" );
+				// 		}
+				// 		break;
 
-						System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
-						System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(buffer, messageSize));
-						break;
-				}
-							//バイト列を出力
-						output.write(buffer);
-						output.flush();//残らずでやがれ！
+				// 	case "broadcast":
+
+				// 		System.out.println("[GET MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(message, messageSize));
+				// 		System.out.println("[SEND MESSAGE : "+socket.getRemoteSocketAddress() + "] " + FXprotocolModuleServer.convert(message, messageSize));
+				// 		break;
+				// }
+
+				//バイト列を出力
+				output.write(message);
+				output.flush();//残らずでやがれ！
 			}
 
 		}catch(IOException e){
