@@ -27,7 +27,6 @@ class FXprotocolModuleServer{
 	}
 
 
-
 	public static String getBody(byte[] message_binary){
 
 		/*

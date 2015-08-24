@@ -1,88 +1,60 @@
 'use strict';
 
-var net = require('net');
-var readlineSync = require('readline-sync');
-var FX = require('./FXprotocolModule.js');
-var config = require('./config.json')
-var message = require('./message.json')
+var remote = require('remote');
+var net = remote.require('net');
+var FX = remote.require('./FXprotocolModule.js');
+var config = remote.require('./config.json')
+var message = remote.require('./message.json')
 
 
-var socket;
-
-
-
-/* このプログラムはコネクションセクションから始まります */
-connection();
-
-
-// コネクションセクション-------------------------------------//
-
-function connection(){
-	socket = createSocket(login);	//コネクション確立後、コールバックでログインセクションに入ります。
-}
-
-// ログインセクション-------------------------------------//
+var socket = createSocket();
 
 
 
-function login(){
+function send(){
 
-	var type = config.type.login;
+	// テキストボックスの文字を取得
+	var body = $("#message").val();
+	// テキストボックスを空欄にする
+	$("#message").val("");
 
-	// var username = readlineSync.question('username: ');
-	// var password = readlineSync.question('password: ', {hideEchoBack: true});
+    // 選択されているtype属性値を取り出す
+	var type = $("#type").val();
 
-	//メッセージオブジェクト	
+	// 取得したtypeを1byte形式に変換
+	switch(type){
+		case "broadcast":
+			type = config.type.broadcast;
+			break;
+		case "multicast":
+			type = config.type.multicast;
+			break;
+	}
+
+	//　メッセージオブジェクト
 	var message = {
 		"head": {
 			"version": config.app.version,
 			"type":type
 		},
-		"body": {
-			"username": username,
-			"password": password
-		}
-	}
-	FX.toBinary(message)
-
-	console.log("TODO ログイン実装");
-	chat();
-}
-
-// チャットセクション-------------------------------------//
-
-function chat(){
-
-	while(true){
-		var type = config.type.broadcast;	//TODOメッセージタイプの切り替え
-		var	body = readlineSync.question('> ');
-
-		if(body === "exit"){
-			//ソケットの状態をsocket.syncで見るのが正しいか分からない
-			break;
-		}
-
-		//　メッセージオブジェクト
-		var message = {
-			"head": {
-				"version": config.app.version,
-				"type":type
-			},
-			"body": body
-		}
-
-		FX.send(socket, FX.toBinary(message));
+		"body": body
 	}
 
-	// if(!socket.sync)){
-		console.log("^C to quit.....");
-	// }
+	FX.send(socket, FX.toBinary(message));
+
 }
+
+function receive (message) {
+	var body = FX.toJSON(message).body.toString();
+
+	//受信メッセージリストに追加する
+	$("#msg_list").prepend("<div class='msg'>" + body + "</div>");
+}    
 
 
 /* action */
 
-function createSocket(callback){
+function createSocket(){
 
 	var socket = net.createConnection(
 			{
@@ -100,8 +72,7 @@ function createSocket(callback){
 					"\n///////////////////////////"
 				);
 				
-				// 引数はlogin()
-				callback();
+
 			}
 		);
 	socket.on('error', function(){
@@ -112,9 +83,8 @@ function createSocket(callback){
 	});
 
 	//受信イベント
-	socket.on('data', function(buffer){
-		console.log(FX.toJSON(buffer));
-		console.log(FX.toJSON(buffer).body.toString());
+	socket.on('data', function(message){
+		receive(message);
 	});
 
 	return socket;
