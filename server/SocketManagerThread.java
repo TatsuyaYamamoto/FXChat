@@ -27,7 +27,6 @@ class SocketManagerThread extends Thread{
 			/*クライアントかのアクセス待機*/
 			while(!serverSocket.isClosed()){
 				Socket socket = serverSocket.accept();
-
 				//コネクション後、個別チャットスレッド作成
 				System.out.println("接続されました！新しいスレッド内へソケット渡します。");
 				System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());

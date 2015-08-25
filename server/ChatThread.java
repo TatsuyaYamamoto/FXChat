@@ -33,7 +33,7 @@ class ChatThread extends Thread{
 
 				byte [] message = new byte[BUFFERED_MESSAGE_SIZE];//受信バイト列格納用
 				input.read(message); // メッセージ受信
-				System.out.println(message[0] + "+" + message[1] + "+" + message[2]+ "+" + message[100]);
+				System.out.println(message[0] + "+" + message[1] + "+" + message[2]+ "+" + message[4]);
 
 
 				//受信したmessageのheaderを確認する
