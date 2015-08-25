@@ -67,6 +67,27 @@ class FXprotocolModuleServer{
 		return body_binary;
 	}
 
+	private static byte[] addHead(byte[] body_binary, String type){
+
+		byte[] message_binary = new byte[body_binary.length + 2];
+		message_binary[1] = 1; //現行バージョン TODO: 切り出し
+
+		switch(type){
+			case "broadcast":
+				message_binary[2] = "101";	//broadcast_response
+				break;
+		}
+
+		for (int i = 0; i<body_binary.length; i++){
+			message_binary[i+2] = body_binary[i];
+		}
+
+
+		return message_binary;
+
+	}
+
+
 	public static String convert (byte [] buffer, int messageSize){
 		//headerを削除
 		byte[] body_bytes = new byte[buffer.length - 2];

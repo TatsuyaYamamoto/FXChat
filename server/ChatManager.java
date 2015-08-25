@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class ChatManager{
 
 	//名前は何がいいかわからない
-	HashMap<String, Socket> chatMap;
+	HashMap<String, Socket> sockets;
     //環境に合わせた改行コードを取得する
 	public static final String crlf = System.getProperty("line.separator");
 
@@ -14,17 +14,19 @@ public class ChatManager{
 		System.out.println("////////  RUN CHAT MANGAER! d(・８・)b  ////////");
 		System.out.println("//////////////////////////////////////////////////" + crlf);
 
-		chatMap = new HashMap<String, Socket>();
+		sockets = new HashMap<String, Socket>();
 
 	}
+
 
 
 	//新規に作成されたチャット(ソケット)を受け取り、管理下に置く
-
-	//ユーザーをカテゴリー分けするなら、Beans?作った方がいいかも
 	public void setSocket(String userId, Socket socket){
-		chatMap.put(userId, socket);
+		sockets.put(userId, socket);
 	}
+
+	public void broadcast(byte[] body_binary)
+
 
 	//切断されたチャット(ソケット)を受け取り、管理から外す
 	public void removeSocket(String userId){

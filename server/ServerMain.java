@@ -9,7 +9,7 @@ public class ServerMain {
     System.out.println("////////  START FXChat SYSTEM! d(・８・)b  ////////");
     System.out.println("//////////////////////////////////////////////////" + crlf);
 
-    new SocketManagerThread().start();
-    new ChatManager();
+    ChatManager chatManager = new ChatManager();
+    new SocketManagerThread(chatManager).start();
   }
 }

@@ -5,6 +5,8 @@ import java.io.IOException;
 class SocketManagerThread extends Thread{
 
 	private ServerSocket serverSocket;
+	private ChatManager chatManager;
+
 	public static final String crlf = System.getProperty("line.separator");
 	public static final int ECHO_PORT = 12121;
 
@@ -12,6 +14,8 @@ class SocketManagerThread extends Thread{
 		System.out.println(crlf + "//////////////////////////////////////////////////");
 		System.out.println("////////  RUN SOCKET MANGAER! d(・８・)b  ////////");
 		System.out.println("//////////////////////////////////////////////////" + crlf);
+
+		chatManager = new ChatManager();
     }
 
     public void run(){
@@ -30,7 +34,7 @@ class SocketManagerThread extends Thread{
 				//コネクション後、個別チャットスレッド作成
 				System.out.println("接続されました！新しいスレッド内へソケット渡します。");
 				System.out.println("Remote Socket Address : " + socket.getRemoteSocketAddress());
-				new ChatThread(socket).start();
+				new ChatThread(socket, chatManager).start();
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
