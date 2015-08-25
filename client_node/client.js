@@ -9,16 +9,16 @@ var message = remote.require('./message.json')
 
 var socket = createSocket();
 
-
+var messageCount = 0;
 
 function send(){
 
 	// テキストボックスの文字を取得
-	var body = $("#message").val();
+	var text = $("#message").val();
 	// テキストボックスを空欄にする
 	$("#message").val("");
 
-    // 選択されているtype属性値を取り出す
+    // 選択されているtype属性を取り出す
 	var type = $("#type").val();
 
 	// 取得したtypeを1byte形式に変換
@@ -37,18 +37,29 @@ function send(){
 			"version": config.app.version,
 			"type":type
 		},
-		"body": body
+		"body": {
+			"username":,
+			"message id":,
+			"messageLength": 0,
+			"text": text
+		}
+		// 後でlengthつけるのは、、、あり？
 	}
 
-	FX.send(socket, FX.toBinary(message));
+	write(FX.toBinary(message));
 
 }
 
 function receive (message) {
 	var body = FX.toJSON(message).body.toString();
 
+	messageCount++
+
 	//受信メッセージリストに追加する
-	$("#msg_list").prepend("<div class='msg'>" + body + "</div>");
+	// $("#msg_list").prepend("<div class='msg'>" + body + "</div>");
+
+	$("#msg_list").append("<tr><td>" + messageCount + "</td><td>hogeさん</td><td>" + body + "</td></tr>");
+
 }    
 
 
@@ -77,9 +88,11 @@ function createSocket(){
 		);
 	socket.on('error', function(){
 		console.log(message.notFoundSocket);
+		alert(message.notFoundSocket);
 	});
 	socket.on('close', function(){
 		console.log(message.socketClosed);
+		alert(message.socketClosed);
 	});
 
 	//受信イベント
@@ -89,3 +102,8 @@ function createSocket(){
 
 	return socket;
 }
+
+// 送信
+function write(message_binary) {
+    socket.write(message_binary,[], [])
+};

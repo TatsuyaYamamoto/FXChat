@@ -1,0 +1,26 @@
+{
+  "name": "client_node",
+  "version": "0.0.0",
+  "homepage": "https://github.com/TatsuyaYamamoto/FXChat",
+  "authors": [
+    "t.yamamoto <yamamoto.tatsuya@fujixerox.co.jp>"
+  ],
+  "description": "fine!",
+  "main": "main.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "bootstrap": "~3.3.5",
+    "bootstrap-select": "~1.7.3",
+    "jquery": "~2.1.4"
+  }
+}

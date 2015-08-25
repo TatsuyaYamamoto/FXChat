@@ -36,10 +36,10 @@ public class ChatManager{
 		Socket[] sockets = new Socket[chatMap.size()];
 		int i = 0;
 		//拡張for文（for-each)でループ
-		for(HashMap.Entry<String, Socket> e : chatMap.entrySet()) {
-			sockets[i] = e.getValue();
-			i++;
-		}
+		// for(HashMap.Entry<String, Socket> e : chatMap.entrySet()) {
+		// 	sockets[i] = e.getValue();
+		// 	i++;
+		// }
 		return sockets;
 	}
 	//特定ユーザーのソケット取得(複数対応にする？)

@@ -3,21 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <title>Fine!</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<!-- <script src="./bower_components/jquery/dist/jquery.min.js"></script> -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
 <script src="client.js"></script>
+
+
 </head>
 
 <body>
-	<div id="msg_list" style="height:300px; overflow:auto;"></div>
+
+	<div class="container" style="height:300px; overflow:auto;">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>username</th>
+					<th>message</th>
+				</tr>
+			</thead>
+			<tbody id="msg_list">
+			</tbody>
+		</table>
+	</div>
+
+
+	<div class="container">
 		<form action="" method="post" onsubmit="return false;">
 			<input type="text" class="text" style="width:95%; padding:10px" id="message"/>
-			<input type="submit" class="button" style="padding:10px" onclick="send()" value="send" />
+			<button type="submit" class="btn btn-primary button" onclick="send()" value="send">send</button>
+						<select id="type">
+				<option value="broadcast">ぶろきゃす！</option>
+				<option value="multicast">まるきゃす！</option>
+			</select>
 		</form>
-		<select id="type">
-			<option value="broadcast">ぶろきゃす！</option>
-			<option value="multicast">まるきゃす！</option>
-		</select>
-
 	</div>
 </body>
 </html>
