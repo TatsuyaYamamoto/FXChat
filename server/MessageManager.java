@@ -1,8 +1,14 @@
+import java.net.Socket;
+import java.util.HashMap;
+
+public class ChatManager{
 
 
-public class MessageManager{
+
 
 	//名前は何がいいかわからない
+	List<Socket> sockets;
+
 	HashMap<String, Socket> sockets;
     //環境に合わせた改行コードを取得する
 	public static final String crlf = System.getProperty("line.separator");
@@ -13,20 +19,15 @@ public class MessageManager{
 		System.out.println("////////  RUN CHAT MANGAER! d(・８・)b  ////////");
 		System.out.println("//////////////////////////////////////////////////" + crlf);
 
-		sockets = new HashMap<String, Socket>();
-
 	}
 
-	public void write(byte[] message){
+	public void addSocket(Socket socket){
+		if(this.sockets == null){
+			sockets = new List<Socket>();
+		}
 
-		
-
-
+		this.sockets.add(socket)
 	}
-
-		
-	
-
 
 	// //新規に作成されたチャット(ソケット)を受け取り、管理下に置く
 	// public void setSocket(String userId, Socket socket){

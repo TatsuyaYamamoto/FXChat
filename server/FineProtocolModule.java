@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-class FXprotocolModuleServer{
+class FineProtocolModule{
 
 
 	//固定値：プロトコルのバージョン(取り急ぎ)
@@ -22,7 +22,7 @@ class FXprotocolModuleServer{
 	private static String charset = "UTF-8";
 
 
-	private FXprotocolModuleServer(){
+	private FineProtocolModule(){
 		//インスタンス作成禁止
 	}
 

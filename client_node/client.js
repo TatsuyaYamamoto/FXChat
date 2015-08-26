@@ -2,9 +2,9 @@
 
 var remote = require('remote');
 var net = remote.require('net');
-var FX = remote.require('./FXprotocolModule.js');
-var config = remote.require('./config.json')
-var message = remote.require('./message.json')
+var FX = remote.require('FXprotocolModule.js');
+var config = remote.require('config.json')
+var message = remote.require('message.json')
 
 
 var socket = createSocket();
@@ -38,8 +38,8 @@ function send(){
 			"type":type
 		},
 		"body": {
-			"username":,
-			"message id":,
+			"username":0,
+			"message id":0,
 			"messageLength": 0,
 			"text": text
 		}

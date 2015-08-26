@@ -4,24 +4,27 @@ import java.io.OutputStream;
 import java.io.IOException;
 
 class ChatThread extends Thread{
+
     private Socket socket;
-    private ChatManager chatManager;
+    private MessageManager messageManager;
+
     //環境に合わせた改行コードを取得する
 	public static final String crlf = System.getProperty("line.separator");
 	//固定値：messageのbyte列の要素数
 	private static int BUFFERED_MESSAGE_SIZE = 1028;
 
 
-    public ChatThread(Socket socket ChatManager chatManager){
+    public ChatThread(Socket socket, MessageManager messageManager){
 		System.out.println(crlf + "//////////////////////////////////////////////////");
 		System.out.println("////////  RUN NEW CHAT THREAD! d(・８・)b  ////////");
 		System.out.println("//////////////////////////////////////////////////" + crlf);
 
 		this.socket = socket;
-		this.chatManager = chatManager;
-
 		System.out.println("Client Socketと接続しました。(Remote Socket Address : " + socket.getRemoteSocketAddress() + ")");
-    }
+
+		this.messageManager = messageManager;
+		System.out.println("ChatThreadをMessageManagerと接続しました。");
+	}
 
     public void run(){
 
@@ -36,10 +39,9 @@ class ChatThread extends Thread{
 				input.read(message); // メッセージ受信
 				System.out.println(message[0] + "+" + message[1] + "+" + message[2]+ "+" + message[4]);
 
-				System.out.println("[GET MESSAGE] : " + FXprotocolModuleServer.getBody(message));
+				System.out.println("[GET MESSAGE] : " + FineProtocolModule.getBody(message));
 
-				//名前悪い。チャットサーバーの送信はmessage_binary毎ChatManagerに投げます。
-				chatManager.send(message);
+				new Transmission(socket, message).start();
 
 				//バイト列を出力
 				output.write(message);
@@ -60,6 +62,12 @@ class ChatThread extends Thread{
 		}
     }
 
+    private void send(byte[] message){
+		output.write(message);
+    }
 
+    private void receive(){
+
+    }
 
 }
